@@ -1,0 +1,60 @@
+pub struct Player {
+    name: String,
+    hp: u32,
+    max_hp: u32,
+}
+
+impl Player {
+    pub fn new(name: String, hp: u32, max_hp: u32) -> Player {
+        Player { name, hp, max_hp }
+    }
+    pub fn health(&self) -> u32 {
+        self.hp
+    }
+    pub fn take_damage(&mut self, damage: u32) {
+        if damage >= self.hp {
+            self.hp = 0;
+        } else {
+            self.hp -= damage;
+        }
+    }
+    pub fn heal(&mut self, amount: u32) {
+        if self.hp + amount >= self.max_hp {
+            self.hp = self.max_hp;
+        } else {
+            self.hp += amount;
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_take_damage() {
+        let mut player = super::Player::new(String::from("Arthur"), 100, 100);
+
+        player.take_damage(20);
+
+        assert_eq!(player.hp, 80);
+
+        let mut player_2 = super::Player::new(String::from("Mordred"), 150, 150);
+
+        player_2.take_damage(200);
+
+        assert_eq!(player_2.hp, 0);
+    }
+    #[test]
+    fn test_health() {
+        let player = super::Player::new(String::from("Arthur"), 100, 100);
+
+        assert_eq!(player.health(), 100);
+    }
+    #[test]
+    fn test_heal() {
+        let mut player = super::Player::new(String::from("Arthur"), 80, 100);
+
+        player.heal(20);
+
+        assert_eq!(player.hp, 100);
+    }
+}

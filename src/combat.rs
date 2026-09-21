@@ -1,6 +1,11 @@
 use crate::player::Player;
 
-pub fn attack(attacker: &Player, target: &mut Player, damage: u32) {
+pub trait Damageable {
+    fn take_damage(&mut self, damage: u32);
+    fn name(&self) -> &str;
+}
+
+pub fn attack(attacker: &impl Damageable, target: &mut impl Damageable, damage: u32) {
     target.take_damage(damage);
     println!(
         "{} dealt {} damage to {}",

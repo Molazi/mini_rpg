@@ -11,6 +11,9 @@ impl Player {
     pub fn health(&self) -> u32 {
         self.hp
     }
+    pub fn name(&self) -> &str {
+        &self.name
+    }
     pub fn take_damage(&mut self, damage: u32) {
         if damage >= self.hp {
             self.hp = 0;

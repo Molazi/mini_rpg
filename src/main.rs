@@ -1,11 +1,10 @@
+mod combat;
 mod player;
-use player::Player;
 
 fn main() {
-    let mut player_1 = Player::new(String::from("Arthur"), 100, 100);
+    let character_1 = player::Player::new(String::from("Arthur"), 100, 100);
+    let mut character_2 = player::Player::new(String::from("Mordred"), 150, 150);
 
-    player_1.take_damage(20);
-    let new_health = player_1.health();
-
-    println!("HP: {}", new_health);
+    combat::attack(&character_1, &mut character_2, 20);
+    println!("Mordred HP: {}", character_2.health());
 }

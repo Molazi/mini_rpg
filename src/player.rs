@@ -1,3 +1,5 @@
+use crate::combat::Damageable;
+
 pub struct Player {
     name: String,
     hp: u32,
@@ -27,6 +29,16 @@ impl Player {
         } else {
             self.hp += amount;
         }
+    }
+}
+
+impl Damageable for Player {
+    fn take_damage(&mut self, damage: u32) {
+        Player::take_damage(self, damage);
+    }
+
+    fn name(&self) -> &str {
+        Player::name(self)
     }
 }
 

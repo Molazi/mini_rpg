@@ -27,35 +27,53 @@ fn choose_action() -> Action {
     }
 }
 
-fn main() {
-    let mut player = Player::new(String::from("Arthur"), 100, 100);
-    let mut enemy_1 = Enemy::new(String::from("Goblin"), 20, 20);
+fn player_turn(player: &mut Player, enemy: &mut Enemy) -> bool {
+    let action = choose_action();
 
+    match action {
+        Action::Attack => {
+            combat::attack(player, enemy, 10);
+            true
+        }
+        Action::Heal => {
+            Player::heal(player, 20);
+            true
+        }
+        Action::Run => false,
+    }
+}
+
+fn enemy_turn(enemy: &Enemy, player: &mut Player) {
+    combat::attack(enemy, player, 10);
+}
+
+fn game_loop(player: &mut Player, enemy: &mut Enemy) {
     loop {
-        let action = choose_action();
-        match action {
-            Action::Attack => combat::attack(&player, &mut enemy_1, 10),
-            Action::Heal => Player::heal(&mut player, 20),
-            Action::Run => {
-                println!("Player runs away!");
-                break;
-            }
+        if !player_turn(player, enemy) {
+            break;
         }
 
-        if enemy_1.health() == 0 {
-            println!("{} is dead!", enemy_1.name());
+        if !enemy.is_alive() {
+            println!("{} is dead!", enemy.name());
             println!("You win!");
             break;
         }
 
-        combat::attack(&enemy_1, &mut player, 5);
+        enemy_turn(enemy, player);
 
-        if player.health() == 0 {
+        if !player.is_alive() {
             println!("{} is dead!", player.name());
             println!("You lost!");
             break;
         }
     }
+}
+
+fn main() {
+    let mut player = Player::new(String::from("Arthur"), 100, 100);
+    let mut enemy_1 = Enemy::new(String::from("Goblin"), 20, 20);
+
+    game_loop(&mut player, &mut enemy_1);
 
     println!("{} HP: {}", enemy_1.name(), enemy_1.health());
     println!("{} HP: {}", player.name(), player.health());

@@ -30,6 +30,9 @@ impl Enemy {
             self.hp += amount;
         }
     }
+    pub fn is_alive(&self) -> bool {
+        self.hp != 0
+    }
 }
 
 impl Damageable for Enemy {
@@ -55,5 +58,15 @@ mod tests {
         let mut enemy_1 = super::Enemy::new(String::from("Goblin"), 10, 20);
         enemy_1.heal(20);
         assert_eq!(enemy_1.health(), enemy_1.max_hp);
+    }
+    #[test]
+    fn test_is_alive() {
+        let enemy = super::Enemy::new(String::from("Arthur"), 100, 100);
+        assert!(enemy.is_alive());
+    }
+    #[test]
+    fn test_is_alive_2() {
+        let enemy = super::Enemy::new(String::from("Arthur"), 0, 100);
+        assert!(!enemy.is_alive());
     }
 }

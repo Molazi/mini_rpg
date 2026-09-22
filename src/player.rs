@@ -30,6 +30,9 @@ impl Player {
             self.hp += amount;
         }
     }
+    pub fn is_alive(&self) -> bool {
+        self.hp != 0
+    }
 }
 
 impl Damageable for Player {
@@ -71,5 +74,15 @@ mod tests {
         player.heal(20);
 
         assert_eq!(player.hp, 100);
+    }
+    #[test]
+    fn test_is_alive() {
+        let player = super::Player::new(String::from("Arthur"), 100, 100);
+        assert!(player.is_alive());
+    }
+    #[test]
+    fn test_is_alive_2() {
+        let player = super::Player::new(String::from("Arthur"), 0, 100);
+        assert!(!player.is_alive());
     }
 }

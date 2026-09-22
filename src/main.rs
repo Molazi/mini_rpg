@@ -47,34 +47,40 @@ fn enemy_turn(enemy: &Enemy, player: &mut Player) {
     combat::attack(enemy, player, 10);
 }
 
-fn game_loop(player: &mut Player, enemy: &mut Enemy) {
-    loop {
-        if !player_turn(player, enemy) {
-            break;
+fn game_loop(player: &mut Player, enemies: &mut Vec<Enemy>) {
+    for foe in enemies {
+        if !foe.is_alive() {
+            continue;
         }
+        loop {
+            if !player_turn(player, foe) {
+                return;
+            }
 
-        if !enemy.is_alive() {
-            println!("{} is dead!", enemy.name());
-            println!("You win!");
-            break;
-        }
+            if !foe.is_alive() {
+                println!("{} is dead!", foe.name());
+                break;
+            }
 
-        enemy_turn(enemy, player);
+            enemy_turn(foe, player);
 
-        if !player.is_alive() {
-            println!("{} is dead!", player.name());
-            println!("You lost!");
-            break;
+            if !player.is_alive() {
+                println!("{} is dead!", player.name());
+                println!("You lost!");
+                return;
+            }
         }
     }
+    println!("You win!");
 }
 
 fn main() {
     let mut player = Player::new(String::from("Arthur"), 100, 100);
-    let mut enemy_1 = Enemy::new(String::from("Goblin"), 20, 20);
+    let mut enemies = vec![
+        Enemy::new(String::from("Goblin"), 20, 20),
+        Enemy::new(String::from("Bandit"), 30, 30),
+        Enemy::new(String::from("Mutant"), 50, 50),
+    ];
 
-    game_loop(&mut player, &mut enemy_1);
-
-    println!("{} HP: {}", enemy_1.name(), enemy_1.health());
-    println!("{} HP: {}", player.name(), player.health());
+    game_loop(&mut player, &mut enemies);
 }

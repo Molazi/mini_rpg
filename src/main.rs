@@ -36,7 +36,7 @@ fn player_turn(player: &mut Player, enemy: &mut Enemy) -> bool {
             true
         }
         Action::Heal => {
-            Player::heal(player, 20);
+            player.use_potion();
             true
         }
         Action::Run => false,
@@ -75,7 +75,7 @@ fn game_loop(player: &mut Player, enemies: &mut Vec<Enemy>) {
 }
 
 fn main() {
-    let mut player = Player::new(String::from("Arthur"), 100, 100);
+    let mut player = Player::new(String::from("Arthur"), 100, 100, 3);
     let mut enemies = vec![
         Enemy::new(String::from("Goblin"), 20, 20),
         Enemy::new(String::from("Bandit"), 30, 30),

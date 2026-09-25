@@ -10,6 +10,12 @@ enum Action {
     Run,
 }
 
+enum ActionResult {
+    Continue,
+    EnemyDefeated,
+    Run,
+}
+
 fn choose_action() -> Action {
     loop {
         println!("Choose action: ");
@@ -27,19 +33,23 @@ fn choose_action() -> Action {
     }
 }
 
-fn player_turn(player: &mut Player, enemy: &mut Enemy) -> bool {
+fn player_turn(player: &mut Player, enemy: &mut Enemy) -> ActionResult {
     let action = choose_action();
 
     match action {
         Action::Attack => {
             combat::attack(player, enemy, 10);
-            true
+            if !enemy.is_alive() {
+                ActionResult::EnemyDefeated
+            } else {
+                ActionResult::Continue
+            }
         }
         Action::Heal => {
             player.use_potion();
-            true
+            ActionResult::Continue
         }
-        Action::Run => false,
+        Action::Run => ActionResult::Run,
     }
 }
 
@@ -52,22 +62,25 @@ fn game_loop(player: &mut Player, enemies: &mut Vec<Enemy>) {
         if !foe.is_alive() {
             continue;
         }
+        println!("{} appeared!", foe.name());
         loop {
-            if !player_turn(player, foe) {
-                return;
-            }
-
-            if !foe.is_alive() {
-                println!("{} is dead!", foe.name());
-                break;
-            }
-
-            enemy_turn(foe, player);
-
-            if !player.is_alive() {
-                println!("{} is dead!", player.name());
-                println!("You lost!");
-                return;
+            match player_turn(player, foe) {
+                ActionResult::Continue => {
+                    enemy_turn(foe, player);
+                    if !player.is_alive() {
+                        println!("{} is dead!", player.name());
+                        println!("You lost!");
+                        return;
+                    }
+                }
+                ActionResult::EnemyDefeated => {
+                    println!("{} is dead!", foe.name());
+                    break;
+                }
+                ActionResult::Run => {
+                    println!("{} runs away!", player.name());
+                    return;
+                }
             }
         }
     }

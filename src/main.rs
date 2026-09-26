@@ -54,7 +54,7 @@ fn player_turn(player: &mut Player, enemy: &mut Enemy) -> ActionResult {
 }
 
 fn enemy_turn(enemy: &Enemy, player: &mut Player) {
-    combat::attack(enemy, player, 10);
+    combat::attack(enemy, player, enemy.attack_damage());
 }
 
 fn game_loop(player: &mut Player, enemies: &mut Vec<Enemy>) {
@@ -90,9 +90,9 @@ fn game_loop(player: &mut Player, enemies: &mut Vec<Enemy>) {
 fn main() {
     let mut player = Player::new(String::from("Arthur"), 100, 100, 3);
     let mut enemies = vec![
-        Enemy::new(String::from("Goblin"), 20, 20),
-        Enemy::new(String::from("Bandit"), 30, 30),
-        Enemy::new(String::from("Mutant"), 50, 50),
+        Enemy::new(String::from("Goblin"), 20, 20, 5),
+        Enemy::new(String::from("Bandit"), 30, 30, 10),
+        Enemy::new(String::from("Mutant"), 50, 50, 15),
     ];
 
     game_loop(&mut player, &mut enemies);

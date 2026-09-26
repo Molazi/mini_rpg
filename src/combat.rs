@@ -20,14 +20,14 @@ mod tests {
     #[test]
     fn test_attack() {
         let character_1 = super::Player::new(String::from("Arthur"), 100, 100, 3);
-        let mut enemy_1 = crate::enemy::Enemy::new(String::from("Goblin"), 20, 20);
+        let mut enemy_1 = crate::enemy::Enemy::new(String::from("Goblin"), 20, 20, 10);
         super::attack(&character_1, &mut enemy_1, 20);
         assert_eq!(enemy_1.health(), 0);
     }
     #[test]
     fn test_enemy_attack() {
         let mut character_1 = super::Player::new(String::from("Arthur"), 100, 100, 3);
-        let enemy_1 = crate::enemy::Enemy::new(String::from("Goblin"), 20, 20);
+        let enemy_1 = crate::enemy::Enemy::new(String::from("Goblin"), 20, 20, 10);
         super::attack(&enemy_1, &mut character_1, 20);
         assert_eq!(character_1.health(), 80);
     }

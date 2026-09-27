@@ -19,6 +19,9 @@ impl Enemy {
     pub fn health(&self) -> u32 {
         self.hp
     }
+    pub fn max_health(&self) -> u32 {
+        self.max_hp
+    }
     pub fn name(&self) -> &str {
         &self.name
     }
@@ -82,5 +85,15 @@ mod tests {
     fn test_attack_damage() {
         let enemy = super::Enemy::new(String::from("Goblin"), 20, 20, 5);
         assert_eq!(enemy.attack_damage(), 5);
+    }
+    #[test]
+    fn test_health() {
+        let enemy = super::Enemy::new(String::from("Goblin"), 10, 20, 5);
+        assert_eq!(enemy.health(), 10);
+    }
+    #[test]
+    fn test_max_health() {
+        let enemy = super::Enemy::new(String::from("Goblin"), 20, 20, 5);
+        assert_eq!(enemy.max_health(), 20);
     }
 }

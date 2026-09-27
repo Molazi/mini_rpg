@@ -38,7 +38,7 @@ fn player_turn(player: &mut Player, enemy: &mut Enemy) -> ActionResult {
 
     match action {
         Action::Attack => {
-            combat::attack(player, enemy, 10);
+            combat::attack(player, enemy, player.attack_damage());
             if !enemy.is_alive() {
                 ActionResult::EnemyDefeated
             } else {
@@ -88,7 +88,7 @@ fn game_loop(player: &mut Player, enemies: &mut Vec<Enemy>) {
 }
 
 fn main() {
-    let mut player = Player::new(String::from("Arthur"), 100, 100, 3);
+    let mut player = Player::new(String::from("Arthur"), 100, 100, 3, 10);
     let mut enemies = vec![
         Enemy::new(String::from("Goblin"), 20, 20, 5),
         Enemy::new(String::from("Bandit"), 30, 30, 10),

@@ -21,6 +21,12 @@ impl Player {
     pub fn health(&self) -> u32 {
         self.hp
     }
+    pub fn max_health(&self) -> u32 {
+        self.max_hp
+    }
+    pub fn potions(&self) -> u32 {
+        self.potions
+    }
     pub fn name(&self) -> &str {
         &self.name
     }
@@ -34,20 +40,22 @@ impl Player {
             self.hp -= damage;
         }
     }
-    fn heal(&mut self, amount: u32) {
+    fn heal(&mut self, amount: u32) -> u32 {
         if self.hp + amount >= self.max_hp {
+            let healed = self.max_hp - self.hp;
             self.hp = self.max_hp;
+            healed
         } else {
             self.hp += amount;
+            amount
         }
     }
-    pub fn use_potion(&mut self) {
+    pub fn use_potion(&mut self) -> Option<u32> {
         if self.potions == 0 {
-            println!("No potions left!");
+            None
         } else {
             self.potions -= 1;
-            println!("{} used healing potion!", self.name());
-            self.heal(20);
+            Some(self.heal(20))
         }
     }
     pub fn is_alive(&self) -> bool {
@@ -108,7 +116,7 @@ mod tests {
     #[test]
     fn test_potions_amount() {
         let player = super::Player::new(String::from("Arthur"), 100, 100, 3, 10);
-        assert_eq!(player.potions, 3);
+        assert_eq!(player.potions(), 3);
     }
     #[test]
     fn test_use_potion() {
@@ -135,5 +143,10 @@ mod tests {
     fn test_attack_damage() {
         let player = super::Player::new(String::from("Arthur"), 90, 100, 3, 10);
         assert_eq!(player.attack_damage(), 10);
+    }
+    #[test]
+    fn test_max_health() {
+        let player = super::Player::new(String::from("Arthur"), 90, 100, 3, 10);
+        assert_eq!(player.max_health(), 100);
     }
 }

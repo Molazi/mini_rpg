@@ -1,8 +1,12 @@
 mod combat;
 mod enemy;
+mod event;
 mod player;
+mod ui;
 use enemy::Enemy;
 use player::Player;
+
+use crate::{Action::Attack, event::BattleEvent};
 
 enum Action {
     Attack,
@@ -33,12 +37,18 @@ fn choose_action() -> Action {
     }
 }
 
-fn player_turn(player: &mut Player, enemy: &mut Enemy) -> ActionResult {
+fn player_turn(player: &mut Player, enemy: &mut Enemy, log: &mut Vec<BattleEvent>) -> ActionResult {
     let action = choose_action();
 
     match action {
         Action::Attack => {
-            combat::attack(player, enemy, player.attack_damage());
+            let damage = player.attack_damage();
+            combat::attack(player, enemy, damage);
+            log.push(BattleEvent::Attack {
+                attacker: String::from(player.name()),
+                target: String::from(enemy.name()),
+                damage,
+            });
             if !enemy.is_alive() {
                 ActionResult::EnemyDefeated
             } else {
@@ -46,45 +56,73 @@ fn player_turn(player: &mut Player, enemy: &mut Enemy) -> ActionResult {
             }
         }
         Action::Heal => {
-            player.use_potion();
+            let healed = player.use_potion();
+            match healed {
+                Some(healed) => log.push(BattleEvent::PotionUsed {
+                    name: String::from(player.name()),
+                    healed,
+                }),
+                None => log.push(BattleEvent::NoPotions),
+            }
             ActionResult::Continue
         }
         Action::Run => ActionResult::Run,
     }
 }
 
-fn enemy_turn(enemy: &Enemy, player: &mut Player) {
-    combat::attack(enemy, player, enemy.attack_damage());
+fn enemy_turn(enemy: &Enemy, player: &mut Player, log: &mut Vec<BattleEvent>) {
+    let damage = enemy.attack_damage();
+    combat::attack(enemy, player, damage);
+    log.push(BattleEvent::Attack {
+        attacker: String::from(enemy.name()),
+        target: String::from(player.name()),
+        damage,
+    })
 }
 
 fn game_loop(player: &mut Player, enemies: &mut Vec<Enemy>) {
+    let mut log: Vec<BattleEvent> = Vec::new();
     for foe in enemies {
         if !foe.is_alive() {
             continue;
         }
-        println!("{} appeared!", foe.name());
+        log.push(BattleEvent::EnemyAppeared {
+            name: String::from(foe.name()),
+        });
         loop {
-            match player_turn(player, foe) {
+            ui::render(player, Some(foe), &log);
+            match player_turn(player, foe, &mut log) {
                 ActionResult::Continue => {
-                    enemy_turn(foe, player);
+                    enemy_turn(foe, player, &mut log);
                     if !player.is_alive() {
-                        println!("{} is dead!", player.name());
-                        println!("You lost!");
+                        log.push(BattleEvent::Defeated {
+                            name: String::from(player.name()),
+                        });
+                        ui::render(player, Some(foe), &log);
                         return;
                     }
                 }
                 ActionResult::EnemyDefeated => {
-                    println!("{} is dead!", foe.name());
+                    log.push(BattleEvent::Defeated {
+                        name: String::from(foe.name()),
+                    });
+                    ui::render(player, Some(foe), &log);
                     break;
                 }
                 ActionResult::Run => {
-                    println!("{} runs away!", player.name());
+                    log.push(BattleEvent::PlayerRan {
+                        name: String::from(player.name()),
+                    });
+                    ui::render(player, Some(foe), &log);
                     return;
                 }
             }
         }
     }
-    println!("You win!");
+    log.push(BattleEvent::Victory {
+        name: String::from(player.name()),
+    });
+    ui::render(player, None, &log);
 }
 
 fn main() {

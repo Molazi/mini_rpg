@@ -22,12 +22,9 @@ pub fn render(player: &Player, enemy: Option<&Enemy>, log: &[BattleEvent]) {
     println!();
 
     println!("ENEMY");
-    match enemy {
-        Some(enemy) => {
-            println!("{}", enemy.name());
-            println!("HP: {} / {}", enemy.health(), enemy.max_health());
-        }
-        None => {}
+    if let Some(enemy) = enemy {
+        println!("{}", enemy.name());
+        println!("HP: {} / {}", enemy.health(), enemy.max_health());
     }
     println!();
 

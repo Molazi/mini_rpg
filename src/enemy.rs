@@ -35,13 +35,6 @@ impl Enemy {
             self.hp -= damage;
         }
     }
-    pub fn heal(&mut self, amount: u32) {
-        if self.hp + amount >= self.max_hp {
-            self.hp = self.max_hp;
-        } else {
-            self.hp += amount;
-        }
-    }
     pub fn is_alive(&self) -> bool {
         self.hp != 0
     }
@@ -64,12 +57,6 @@ mod tests {
         let mut enemy_1 = super::Enemy::new(String::from("Goblin"), 20, 20, 10);
         enemy_1.take_damage(10);
         assert_eq!(enemy_1.health(), 10);
-    }
-    #[test]
-    fn test_heal() {
-        let mut enemy_1 = super::Enemy::new(String::from("Goblin"), 10, 20, 10);
-        enemy_1.heal(20);
-        assert_eq!(enemy_1.health(), enemy_1.max_hp);
     }
     #[test]
     fn test_is_alive() {

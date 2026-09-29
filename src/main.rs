@@ -6,7 +6,7 @@ mod ui;
 use enemy::Enemy;
 use player::Player;
 
-use crate::{Action::Attack, event::BattleEvent};
+use crate::event::BattleEvent;
 
 enum Action {
     Attack,

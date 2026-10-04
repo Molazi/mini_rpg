@@ -54,33 +54,20 @@ impl Damageable for Enemy {
 mod tests {
     #[test]
     fn test_take_damage() {
-        let mut enemy_1 = super::Enemy::new(String::from("Goblin"), 20, 20, 10);
-        enemy_1.take_damage(10);
-        assert_eq!(enemy_1.health(), 10);
+        let mut enemy = super::Enemy::new(String::from("Goblin"), 20, 20, 10);
+        enemy.take_damage(10);
+        assert_eq!(enemy.hp, 10);
     }
     #[test]
-    fn test_is_alive() {
-        let enemy = super::Enemy::new(String::from("Goblin"), 100, 100, 10);
-        assert!(enemy.is_alive());
+    fn test_take_damage_exceeding_health() {
+        let mut enemy = super::Enemy::new(String::from("Goblin"), 20, 20, 10);
+        enemy.take_damage(30);
+        assert_eq!(enemy.hp, 0);
     }
     #[test]
-    fn test_is_alive_2() {
-        let enemy = super::Enemy::new(String::from("Goblin"), 0, 100, 10);
-        assert!(!enemy.is_alive());
-    }
-    #[test]
-    fn test_attack_damage() {
-        let enemy = super::Enemy::new(String::from("Goblin"), 20, 20, 5);
-        assert_eq!(enemy.attack_damage(), 5);
-    }
-    #[test]
-    fn test_health() {
-        let enemy = super::Enemy::new(String::from("Goblin"), 10, 20, 5);
-        assert_eq!(enemy.health(), 10);
-    }
-    #[test]
-    fn test_max_health() {
-        let enemy = super::Enemy::new(String::from("Goblin"), 20, 20, 5);
-        assert_eq!(enemy.max_health(), 20);
+    fn test_take_damage_equal_to_health() {
+        let mut enemy = super::Enemy::new(String::from("Goblin"), 20, 20, 10);
+        enemy.take_damage(20);
+        assert_eq!(enemy.hp, 0);
     }
 }

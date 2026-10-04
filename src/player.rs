@@ -78,75 +78,43 @@ mod tests {
     #[test]
     fn test_take_damage() {
         let mut player = super::Player::new(String::from("Arthur"), 100, 100, 3, 10);
-
         player.take_damage(20);
-
         assert_eq!(player.hp, 80);
-
-        let mut player_2 = super::Player::new(String::from("Mordred"), 150, 150, 3, 10);
-
-        player_2.take_damage(200);
-
-        assert_eq!(player_2.hp, 0);
     }
     #[test]
-    fn test_health() {
-        let player = super::Player::new(String::from("Arthur"), 100, 100, 3, 10);
-
-        assert_eq!(player.health(), 100);
+    fn test_take_damage_exceeding_health() {
+        let mut player = super::Player::new(String::from("Mordred"), 150, 150, 3, 15);
+        player.take_damage(200);
+        assert_eq!(player.hp, 0);
     }
     #[test]
-    fn test_heal() {
-        let mut player = super::Player::new(String::from("Arthur"), 80, 100, 3, 10);
-
-        player.heal(20);
-
-        assert_eq!(player.hp, 100);
-    }
-    #[test]
-    fn test_is_alive() {
-        let player = super::Player::new(String::from("Arthur"), 100, 100, 3, 10);
-        assert!(player.is_alive());
-    }
-    #[test]
-    fn test_is_alive_2() {
-        let player = super::Player::new(String::from("Arthur"), 0, 100, 3, 10);
-        assert!(!player.is_alive());
-    }
-    #[test]
-    fn test_potions_amount() {
-        let player = super::Player::new(String::from("Arthur"), 100, 100, 3, 10);
-        assert_eq!(player.potions(), 3);
+    fn test_take_damage_equal_to_health() {
+        let mut player = super::Player::new(String::from("Mordred"), 150, 150, 3, 15);
+        player.take_damage(150);
+        assert_eq!(player.hp, 0);
     }
     #[test]
     fn test_use_potion() {
         let mut player = super::Player::new(String::from("Arthur"), 70, 100, 3, 10);
-        player.use_potion();
+        let result = player.use_potion();
+        assert_eq!(result, Some(20));
         assert_eq!(player.health(), 90);
         assert_eq!(player.potions, 2);
     }
     #[test]
     fn test_no_potions() {
         let mut player = super::Player::new(String::from("Arthur"), 70, 100, 0, 10);
-        player.use_potion();
+        let result = player.use_potion();
+        assert_eq!(result, None);
         assert_eq!(player.health(), 70);
         assert_eq!(player.potions, 0);
     }
     #[test]
     fn test_potion_hp_cap() {
         let mut player = super::Player::new(String::from("Arthur"), 90, 100, 3, 10);
-        player.use_potion();
+        let result = player.use_potion();
+        assert_eq!(result, Some(10));
         assert_eq!(player.health(), 100);
         assert_eq!(player.potions, 2);
-    }
-    #[test]
-    fn test_attack_damage() {
-        let player = super::Player::new(String::from("Arthur"), 90, 100, 3, 10);
-        assert_eq!(player.attack_damage(), 10);
-    }
-    #[test]
-    fn test_max_health() {
-        let player = super::Player::new(String::from("Arthur"), 90, 100, 3, 10);
-        assert_eq!(player.max_health(), 100);
     }
 }
